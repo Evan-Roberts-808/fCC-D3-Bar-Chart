@@ -12,6 +12,7 @@ let yAxisScale
 const container = document.getElementById('visual-container')
 let svg = d3.select(container)
             .append('svg')
+            .attr('class', 'visual')
 
 // User Story 1
 svg.append("text")
@@ -47,18 +48,19 @@ const generateScales = () => {
 
 const drawBars = () => {
 
-    let tooltip = d3.select('body')
+    let tooltip = d3.select('#visual-container')
                     .append('div')
                     .attr('id', 'tooltip')
                     .style('visibility', 'hidden')
-                    .style('width', 'auto')
-                    .style('height', 'auto')
+                    // .style('width', 'auto')
+                    // .style('height', 'auto')
 
     svg.selectAll('rect')
         .data(gdpData)
         .enter()
         .append('rect')
         .attr('class', 'bar')
+        .attr('fill', 'steelblue')
         .attr('width', (width - (2 * padding)) / gdpData.length)
         .attr('data-date', (item) => {
             return item[0]
@@ -77,17 +79,18 @@ const drawBars = () => {
         })
         .on('mouseover', (item) => {
             tooltip.transition()
-                .style('visibility', 'visible')
-
+              .style('visibility', 'visible');
+            tooltip.transition().duration(0)
+                    .style("width", width / 3 + "px")
+                    .style("height", heightScale(item) + "px")
             tooltip.text(`${item[0]}\n$${item[1]} Billion`)
-
             document.querySelector('#tooltip').setAttribute('data-date', item[0])
-        })
+          })
         .on('mouseout', (item) => {
             tooltip.transition()
                 .style('visibility', 'hidden')
         })   
-}
+} 
 
 const generateAxis = () => {
     let xAxis = d3.axisBottom(xAxisScale)
